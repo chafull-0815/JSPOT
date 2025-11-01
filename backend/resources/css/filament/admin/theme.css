@@ -1,0 +1,7 @@
+/* CheckboxList をスクロールボックス化 */
+.scrollable-list .fi-fo-checkbox-list{
+  max-height: 12rem !important; /* 高さは好みで 10rem/12rem/14rem など */
+  overflow-y: auto !important;
+  padding-right: .5rem;          /* スクロールバー分の余白（任意） */
+  display: block;                /* 念のため */
+}

@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* ベース微調整（誌面っぽく） */
+:root {
+  --radius: 14px;
+}
