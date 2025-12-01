@@ -3,4 +3,21 @@
 /* ベース微調整（誌面っぽく） */
 :root {
   --radius: 14px;
+  --header-h: 64px;
+}
+
+/* ベース: 画像のにじみ/溢れ防止・角丸 */
+img, video {
+  max-width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@supports (height: 100dvh) {
+  .drawer-panel {
+    height: calc(100dvh - var(--header-h));
+  }
+}
+.drawer-panel {                         /* 100vhフォールバック */
+  height: calc(100vh - var(--header-h));
 }

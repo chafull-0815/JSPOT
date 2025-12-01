@@ -1,12 +1,15 @@
 {
-  "$schema": "https://unpkg.com/knip@latest/schema.json",
-  "entry": ["app/**/*.tsx", "components/**/*.tsx", "lib/**/*.{ts,tsx}"],
-  "project": ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}", "lib/**/*.{ts,tsx}"],
-  "ignore": [
-    "next-env.d.ts",
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "app/**/*.tsx",
     "next.config.ts",
-    "postcss.config.mjs",
-    "tailwind.config.ts",
-    "eslint.config.mjs"
+    "tailwind.config.ts"
+  ],
+  "project": [
+    "components/**/*.tsx",
+    "lib/**/*.ts"
+  ],
+  "ignoreDependencies": [
+    "eslint-plugin-unused-imports"
   ]
 }
