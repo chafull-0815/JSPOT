@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\ServiceProvider; 
+use Illuminate\Support\ServiceProvider;
 
 return [
 

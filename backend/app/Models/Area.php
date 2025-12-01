@@ -1,13 +1,27 @@
 <?php
 
-// app/Models/Area.php
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Area extends Model
 {
-    protected $fillable = ['name','slug'];
+    use HasFactory;
 
-    public function stores() { return $this->hasMany(Store::class); }
+    protected $fillable = [
+        'slug',
+        'name',
+        'sort_order',
+    ];
+
+    public function stores()
+    {
+        return $this->hasMany(Store::class);
+    }
+
+    public function influencers()
+    {
+        return $this->hasMany(Influencer::class, 'main_area_id');
+    }
 }

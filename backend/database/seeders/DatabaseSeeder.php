@@ -8,13 +8,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // まとめて配列で呼ぶ（named argument は使わない）
         $this->call([
             UserSeeder::class,
-            AreaSeeder::class,
-            CookingSeeder::class,
-            AttributeSeeder::class,
             StoreSeeder::class,
+            // InfluencerSeeder とか作ったらここに追加
         ]);
     }
 }

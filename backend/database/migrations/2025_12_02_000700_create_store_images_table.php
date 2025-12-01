@@ -10,14 +10,11 @@ return new class extends Migration
     {
         Schema::create('store_images', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('store_id')
-                ->constrained('stores')
-                ->onDelete('cascade');
-
-            $table->string('image_url'); // 画像URL
-            $table->unsignedInteger('sort_order')->default(0); // 並び順
-
+            $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete();
+            $table->string('image_url');
+            $table->string('caption')->nullable();
+            $table->unsignedInteger('sort_order')->default(0);
+            $table->boolean('is_main')->default(false);
             $table->timestamps();
         });
     }
