@@ -95,7 +95,7 @@ class StoreForm
                     ->maxWidth('7xl'),
 
                 // ───────── タクソノミー（3カラム）
-                Section::make('タクソノミー')
+                Section::make('カテゴリー選択')
                     ->columns(12)
                     ->schema([
                         Select::make('area_id')
@@ -110,13 +110,24 @@ class StoreForm
                             ])
                             ->columnSpan(['default' => 12, 'md' => 4]),
 
-                        // 料理ジャンル（固定高さ + スクロール）
                         // 料理ジャンル（固定高さ + 内側だけスクロール）
                         CheckboxList::make('cookings')
                             ->label('料理ジャンル')
                             ->relationship('cookings', 'name')
                             ->searchable()
                             ->bulkToggleable()
+                            ->columnSpan(['default' => 12, 'md' => 4]),
+                        Select::make('tag')
+                            ->label('タグ')
+                            ->relationship('tags', 'name')
+                            ->multiple()
+                            ->searchable()
+                            ->preload()
+                            ->createOptionForm([
+                                TextInput::make('name')->label('タグ名')->required(),
+                                TextInput::make('slug')->label('スラッグ')->required()
+                                ->unique('tags', 'slug'),
+                            ])
                             ->columnSpan(['default' => 12, 'md' => 4]),
                     ])
                     ->maxWidth('7xl'),
