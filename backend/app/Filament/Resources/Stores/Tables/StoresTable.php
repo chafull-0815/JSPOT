@@ -36,13 +36,6 @@ class StoresTable
                 ->separator(', ')
                 ->toggleable(),
 
-            TextColumn::make('attributes.name')
-                ->label('属性')
-                ->badge()
-                ->color('warning')
-                ->separator(', ')
-                ->toggleable(),
-
             TextColumn::make('opening_hours')
                 ->label('営業時間')
                 ->limit(20)

@@ -48,7 +48,7 @@ class StoreResource extends Resource
     {
         return $table
             // 一覧で N+1 を避ける（パフォーマンス）
-            ->modifyQueryUsing(fn ($query) => $query->with(['area', 'cookings', 'attributes']))
+            ->modifyQueryUsing(fn ($query) => $query->with(['area', 'cookings']))
             ->columns([
                 TextColumn::make('name')
                     ->label('店舗名')
@@ -71,13 +71,6 @@ class StoreResource extends Resource
                 TextColumn::make('cookings.name')
                     ->label('料理ジャンル')
                     ->badge()
-                    ->separator(', ')
-                    ->toggleable(),
-
-                TextColumn::make('attributes.name')
-                    ->label('属性')
-                    ->badge()
-                    ->color('warning')
                     ->separator(', ')
                     ->toggleable(),
 

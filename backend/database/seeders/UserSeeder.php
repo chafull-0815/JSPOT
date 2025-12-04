@@ -2,24 +2,40 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $email = env('ADMIN_EMAIL', 'admin@example.com');
-        $password = env('ADMIN_PASSWORD', 'password');
+        // 明示的に各ロール 1 人ずつ
+        User::factory()->superAdmin()->create([
+            'name' => 'システムスーパー管理者',
+            'email' => 'info@chafull.jp',
+        ]);
 
-        User::updateOrCreate(
-            ['email' => $email],
-            [
-                'name'              => 'Admin',
-                'password'          => Hash::make($password),
-                'email_verified_at' => now(),
-            ]
-        );
+        User::factory()->admin()->create([
+            'name' => '運営管理者A',
+            'email' => 'admin@example.com',
+        ]);
+
+        User::factory()->shopOwner()->create([
+            'name' => '店舗オーナーA',
+            'email' => 'shop-owner@example.com',
+        ]);
+
+        User::factory()->influencer()->create([
+            'name' => 'インフルエンサーA',
+            'email' => 'influencer@example.com',
+        ]);
+
+        User::factory()->create([
+            'name' => '一般ユーザーA',
+            'email' => 'user@example.com',
+        ]);
+
+        // 追加で普通のユーザーを何人か
+        User::factory(10)->create();
     }
 }

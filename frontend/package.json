@@ -6,16 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "next lint --dir app --dir components --dir lib",
+    "typecheck": "tsc --noEmit",
     "lint:unused": "knip",
     "lint:exports": "ts-prune -p tsconfig.json",
-    "lint:imports": "eslint . --ext .ts,.tsx",
-    "\"lint:unused\"": "knip",
-    "\"lint:exports\"": "ts-prune -p tsconfig.json",
-    "\"lint:imports\"": "eslint . --ext .ts,.tsx"
+    "lint:imports": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "next": "16.0.0",
+    "next": "16.0.7",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
@@ -26,6 +24,7 @@
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
     "babel-plugin-react-compiler": "1.0.0",
+    "baseline-browser-mapping": "^2.9.2",
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
     "eslint-plugin-unused-imports": "^4.3.0",
