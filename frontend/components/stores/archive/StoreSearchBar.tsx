@@ -2,7 +2,7 @@
 
 import type { SearchMeta } from "@/lib/data/search";
 import type { Taxonomy } from "@/lib/fixtures/stores.fixture";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Container } from "../../layout";
 
@@ -15,7 +15,6 @@ const toOptions = (arr: Taxonomy[]) =>
 
 export default function StoreSearchBar({ meta }: Props) {
   const router = useRouter();
-  const params = useSearchParams();
 
   // meta
   const areas = useMemo(() => meta.areas ?? [], [meta.areas]);
@@ -33,31 +32,17 @@ export default function StoreSearchBar({ meta }: Props) {
     [meta.dinnerBudgets]
   );
 
-  // state（slugで保持）
-  const [area, setArea] = useState(params.get("area") ?? "");
-  const [station, setStation] = useState(params.get("station") ?? "");
-  const [cooking, setCooking] = useState(params.get("cooking") ?? "");
+  // ---- state 定義（URL からは拾わず全部空スタート）----
+  const [area, setArea] = useState("");
+  const [station, setStation] = useState("");
+  const [cooking, setCooking] = useState("");
+  const [dayType, setDayType] = useState<"" | "lunch" | "dinner">("");
+  const [budget, setBudget] = useState("");
+
   const isStationDisabled = !area;
-
-  const qLunch = params.get("lunch") ?? "";
-  const qDinner = params.get("dinner") ?? "";
-
-  const initialDayType: "" | "lunch" | "dinner" = qLunch
-    ? "lunch"
-    : qDinner
-    ? "dinner"
-    : "";
-
-  const initialBudget = qLunch || qDinner || "";
-
-  // ---- state 定義 ----
-  const [dayType, setDayType] = useState<"" | "lunch" | "dinner">(
-    initialDayType
-  );
-  const [budget, setBudget] = useState(initialBudget);
   const isBudgetDisabled = !dayType;
 
-  // area を選んだ時の station 候補（areaSlugで直接参照）
+  // area を選んだ時の station 候補
   const stationOptions = useMemo(() => {
     if (!area) return [];
     return toOptions(stations[area] ?? []);
@@ -70,7 +55,7 @@ export default function StoreSearchBar({ meta }: Props) {
     return [];
   }, [dayType, lunchBudgets, dinnerBudgets]);
 
-  // dayType変更時にbudgetクリア（要件）
+  // dayType変更時にbudgetクリア
   const onChangeDayType = (v: "" | "lunch" | "dinner") => {
     setDayType(v);
     setBudget("");
@@ -83,7 +68,6 @@ export default function StoreSearchBar({ meta }: Props) {
     if (station) q.set("station", station);
     if (cooking) q.set("cooking", cooking);
 
-    // dayType と budget は排他的
     if (dayType === "lunch") {
       if (budget) q.set("lunch", budget);
       q.delete("dinner");

@@ -7,6 +7,7 @@ import { StoreCard, StoreSearchBar, tagHot, tagNew } from "@/components/stores";
 import { getSearchMeta } from "@/lib/data/search";
 import { getAllStores } from "@/lib/data/stores";
 import type { Store } from "@/lib/fixtures/stores.fixture";
+import { Suspense } from "react";
 
 export default async function Page() {
   const all = await getAllStores();
@@ -33,7 +34,9 @@ export default async function Page() {
     <main className="pb-16">
       <MainHeroSlider slides={heroSlides} />
 
-      <StoreSearchBar meta={meta} />
+      <Suspense fallback={null}>
+        <StoreSearchBar meta={meta} />
+      </Suspense>
 
       <AreaLinks></AreaLinks>
 

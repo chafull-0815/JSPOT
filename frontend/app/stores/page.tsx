@@ -1,6 +1,7 @@
 // app/(searchbar)/stores/page.tsx
 export const dynamic = "force-dynamic";
 
+import { Suspense } from "react";
 import { StoreSearchBar } from "@/components/stores";
 import { StoreList } from "@/components/stores/archive/StoreList";
 import Link from "next/link";
@@ -204,7 +205,9 @@ export default async function StoresPage({
     <>
       {/* 検索バー */}
       <div className="mb-6">
-        <StoreSearchBar meta={meta} />
+        <Suspense fallback={null}>
+          <StoreSearchBar meta={meta} />
+        </Suspense>
       </div>
 
       {/* ヘッダー */}
