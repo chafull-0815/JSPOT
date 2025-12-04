@@ -118,17 +118,8 @@ class StoreForm
                             ->searchable()
                             ->bulkToggleable()
                             ->columnSpan(['default' => 12, 'md' => 4]),
-
-                        CheckboxList::make('attributes')
-                            ->label('店舗の属性')
-                            ->relationship('attributes', 'name')
-                            ->searchable()
-                            ->bulkToggleable()
-                            ->columnSpan(['default' => 12, 'md' => 4]),
-
                     ])
                     ->maxWidth('7xl'),
-
                 // ───────── 画像（メイン=5 / サブ=7）
                 Section::make('画像')
                     ->columns(12)

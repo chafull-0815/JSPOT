@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\Stores;
 
+use App\Filament\Resources\Stores\Pages;
 use App\Filament\Resources\Stores\Schemas\StoreForm;
 use App\Models\Store;
+
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
 
 // PHPのBackedEnum型はグローバルにあるので use は不要だけど、
 // 子クラス側のプロパティ型は親と同じにしないといけない。
@@ -20,9 +23,7 @@ class StoreResource extends Resource
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-building-storefront';
 
     protected static ?string $navigationLabel = '店舗';
-
     protected static ?string $pluralLabel = '店舗';
-
     protected static ?string $modelLabel = '店舗';
 
     public static function getNavigationGroup(): ?string
@@ -47,7 +48,7 @@ class StoreResource extends Resource
     {
         return $table
             // 一覧で N+1 を避ける（パフォーマンス）
-            ->modifyQueryUsing(fn ($query) => $query->with(['area', 'cookings', 'attributes']))
+            ->modifyQueryUsing(fn ($query) => $query->with(['area', 'cookings']))
             ->columns([
                 TextColumn::make('name')
                     ->label('店舗名')
@@ -73,13 +74,6 @@ class StoreResource extends Resource
                     ->separator(', ')
                     ->toggleable(),
 
-                TextColumn::make('attributes.name')
-                    ->label('属性')
-                    ->badge()
-                    ->color('warning')
-                    ->separator(', ')
-                    ->toggleable(),
-
                 TextColumn::make('price_daytime')
                     ->label('昼料金')
                     ->toggleable(),
@@ -101,15 +95,16 @@ class StoreResource extends Resource
             ->defaultSort('id', 'desc');
     }
 
+
     /**
      * /admin/stores 以下のページ
      */
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListStores::route('/'),
+            'index'  => Pages\ListStores::route('/'),
             'create' => Pages\CreateStore::route('/create'),
-            'edit' => Pages\EditStore::route('/{record}/edit'),
+            'edit'   => Pages\EditStore::route('/{record}/edit'),
         ];
     }
 }
