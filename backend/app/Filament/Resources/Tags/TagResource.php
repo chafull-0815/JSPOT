@@ -6,9 +6,9 @@ use App\Filament\Resources\Tags\Pages\CreateTag;
 use App\Filament\Resources\Tags\Pages\EditTag;
 use App\Filament\Resources\Tags\Pages\ListTags;
 use App\Models\Tag;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -16,40 +16,46 @@ class TagResource extends Resource
 {
     protected static ?string $model = Tag::class;
 
+    // ナビゲーションのアイコン（シンプルに文字列で指定）
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
-    // 一覧などで使うタイトル
+    // 一覧やタイトルに使うカラム
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function form(Form $form): Form
+    /**
+     * フォーム定義（Filament v4: Schema ベース）
+     */
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
-            Forms\Components\TextInput::make('name')
+        return $schema->schema([
+            TextInput::make('name')
                 ->label('ラベル')
                 ->required()
                 ->maxLength(255),
 
-            Forms\Components\TextInput::make('slug')
+            TextInput::make('slug')
                 ->label('スラッグ')
                 ->required()
                 ->maxLength(255)
                 ->unique('tags', 'slug', ignoreRecord: true),
 
-            Forms\Components\TextInput::make('sort_order')
+            TextInput::make('sort_order')
                 ->label('並び順')
                 ->numeric()
                 ->default(0),
         ]);
     }
 
+    /**
+     * 一覧テーブル定義
+     */
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
-                    ->sortable()
-                    ->toggleable(),
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('ラベル')
@@ -67,11 +73,7 @@ class TagResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('作成日時')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                // 今はフィルタなしでOK
+                    ->sortable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -86,9 +88,7 @@ class TagResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            // 今はリレーション画面なし
-        ];
+        return [];
     }
 
     public static function getPages(): array
