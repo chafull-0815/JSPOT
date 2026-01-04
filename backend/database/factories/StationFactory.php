@@ -2,18 +2,22 @@
 
 namespace Database\Factories;
 
-use App\Models\Station;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Station>
+ */
 class StationFactory extends Factory
 {
-    protected $model = Station::class;
-
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [
-            'slug' => $this->faker->unique()->slug(),
-            'name' => $this->faker->city(),  // 適当でOK。あとで実データに差し替え可
+            //
         ];
     }
 }

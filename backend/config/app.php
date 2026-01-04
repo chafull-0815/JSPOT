@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\ServiceProvider;
-
 return [
 
     /*
@@ -80,7 +78,7 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'ja'),
+    'locale' => env('APP_LOCALE', 'en'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
@@ -124,11 +122,5 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-
-    'providers' => ServiceProvider::defaultProviders()->merge([
-        App\Providers\AppServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,   // ← これが大事
-        // （他に自作の Provider があればここに追加）
-    ])->toArray(),
 
 ];

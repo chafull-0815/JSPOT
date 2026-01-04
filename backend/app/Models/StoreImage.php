@@ -7,22 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class StoreImage extends Model
 {
+    /** @use HasFactory<\Database\Factories\StoreImageFactory> */
     use HasFactory;
-
-    protected $fillable = [
-        'store_id',
-        'image_url',
-        'caption',
-        'sort_order',
-        'is_main',
-    ];
-
-    protected $casts = [
-        'is_main' => 'boolean',
-    ];
-
-    public function store()
-    {
-        return $this->belongsTo(Store::class);
-    }
 }

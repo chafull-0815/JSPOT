@@ -1,0 +1,12 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class StoreMembership extends Model
+{
+    /** @use HasFactory<\Database\Factories\StoreMembershipFactory> */
+    use HasFactory;
+}

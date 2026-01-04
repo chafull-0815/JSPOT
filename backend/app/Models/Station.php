@@ -7,16 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Station extends Model
 {
+    /** @use HasFactory<\Database\Factories\StationFactory> */
     use HasFactory;
-
-    protected $fillable = [
-        'slug',
-        'name',
-    ];
-
-    public function stores()
-    {
-        return $this->belongsToMany(Store::class, 'store_station')
-            ->withPivot('distance_minutes');
-    }
 }
