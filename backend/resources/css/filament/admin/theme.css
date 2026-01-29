@@ -1,0 +1,114 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+/* ===== JSPOT Admin: Modern / Soft UI ===== */
+/* 生成済みの @import / @tailwind / @layer は消さず、末尾に追記 */
+
+@layer base {
+  :root {
+    /* 全体の角丸・余白の「体感」 */
+    --jsp-radius: 1.25rem; /* 2xl相当 */
+    --jsp-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --jsp-shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  /* 背景トーン（やわらかい白/薄グレー） */
+  body {
+    background: radial-gradient(1200px 800px at 20% 0%, rgba(0, 0, 0, 0.03), transparent 60%),
+                radial-gradient(1200px 800px at 80% 0%, rgba(0, 0, 0, 0.02), transparent 60%),
+                #f7f7fb;
+  }
+
+  /* 文字のレンダリングを少し上品に */
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* ===== レイアウト ===== */
+  .fi-body {
+    background: transparent;
+  }
+
+  /* Topbar（ほんのり透明感） */
+  .fi-topbar {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.75);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  /* Sidebar（カード風に） */
+  .fi-sidebar {
+    background: transparent;
+  }
+  .fi-sidebar > div {
+    background: rgba(255, 255, 255, 0.85);
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  /* ページコンテンツの余白を少し増やして“詰まり感”を減らす */
+  .fi-main {
+    padding-top: 1.25rem;
+  }
+
+  /* ===== カード/セクション ===== */
+  .fi-section,
+  .fi-card,
+  .fi-ta-ctn,
+  .fi-fo-ctn,
+  .fi-wi,
+  .fi-modal-window {
+    border-radius: var(--jsp-radius);
+    box-shadow: var(--jsp-shadow-soft);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  /* セクション見出しの行間 */
+  .fi-section-header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  /* ===== テーブル（見やすく柔らかく） ===== */
+  .fi-ta-ctn {
+    overflow: hidden; /* 角丸を綺麗に */
+  }
+
+  .fi-ta-header {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .fi-ta-row:hover {
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  /* ===== フォーム（入力の角丸を統一） ===== */
+  .fi-input,
+  .fi-select-input,
+  .fi-fo-textarea,
+  .fi-fo-date-time-picker,
+  .fi-fo-file-upload {
+    border-radius: calc(var(--jsp-radius) - 0.5rem);
+  }
+
+  /* ===== ボタン（柔らかい影と角丸） ===== */
+  .fi-btn {
+    border-radius: calc(var(--jsp-radius) - 0.5rem);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+  .fi-btn:hover {
+    box-shadow: var(--jsp-shadow);
+  }
+
+  /* ===== 通知/トースト（角丸） ===== */
+  .fi-no-notification,
+  .fi-to,
+  .fi-to-notification {
+    border-radius: var(--jsp-radius);
+  }
+}

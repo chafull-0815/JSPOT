@@ -11,8 +11,12 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('slug')->nullable()->unique();
-            $table->foreignId('created_by_admin_id')->constrained('admins');
+            $table->foreignId('created_by_admin_id')
+                  ->nullable()
+                  ->constrained('admins')
+                  ->nullOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('stores', function (Blueprint $table) {
@@ -20,6 +24,7 @@ return new class extends Migration {
             $table->ulid('public_id')->unique(); // URL用（推測困難）
 
             $table->string('name');
+            $table->string('name_en')->nullable();
             $table->string('slug')->nullable()->index(); // 店名由来は重複し得るのでuniqueにしない
             $table->text('catchphrase')->nullable();
             $table->string('tel')->nullable();
@@ -53,6 +58,7 @@ return new class extends Migration {
             $table->foreignId('updated_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
 
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('store_memberships', function (Blueprint $table) {
@@ -71,10 +77,19 @@ return new class extends Migration {
         Schema::create('store_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete();
-            $table->string('image_url');
+        
+            // 画像は「URL」ではなく「保存パス」を持つ（public disk 前提）
+            $table->string('disk')->default('public');
+            $table->string('image_path'); // 例: stores/images/xxxx.jpg
+            $table->string('alt_text')->nullable();
+        
             $table->boolean('is_main')->default(false);
-            $table->integer('sort_order')->default(0);
+            $table->unsignedInteger('sort_order')->default(0);
+        
             $table->timestamps();
+        
+            $table->index(['store_id', 'is_main']);
+            $table->index(['store_id', 'sort_order']);
         });
 
         Schema::create('store_opening_hours', function (Blueprint $table) {

@@ -23,17 +23,28 @@ return new class extends Migration
             $table->string('display_name')->nullable();
             $table->string('contact_name')->nullable();
             $table->string('contact_tel')->nullable();
-            $table->foreignId('created_by_admin_id')->constrained('admins');
+            $table->foreignId('created_by_admin_id')
+                  ->nullable()
+                  ->constrained('admins')
+                  ->nullOnDelete();
             $table->timestamps();
         });
 
         Schema::create('influencer_profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')
+                  ->unique()
+                  ->constrained()
+                  ->cascadeOnDelete();
+            $table->foreignId('created_by_admin_id')
+                  ->nullable()
+                  ->constrained('admins')
+                  ->nullOnDelete();
 
             $table->ulid('public_id')->unique();
-            $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('display_name')->nullable();
+            $table->string('name_en')->nullable();      // 追加
+            $table->string('slug')->nullable()->index(); // uniqueをやめる
 
             $table->string('youtube_url')->nullable();
             $table->string('tiktok_url')->nullable();
@@ -41,8 +52,8 @@ return new class extends Migration
             $table->string('instagram_url')->nullable();
             $table->text('bio')->nullable();
 
-            $table->foreignId('created_by_admin_id')->constrained('admins');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

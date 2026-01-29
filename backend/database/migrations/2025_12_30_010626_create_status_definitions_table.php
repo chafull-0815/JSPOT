@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('label_ja');
             $table->string('label_en')->nullable();
             $table->integer('sort_order')->default(0);
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
 
             $table->unique(['domain', 'slug']);
