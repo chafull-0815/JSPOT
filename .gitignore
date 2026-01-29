@@ -35,3 +35,7 @@ frontend/.knip-report.json
 Thumbs.db
 .idea/
 .vscode/
+# Claude Code
+.claude/logs/
+CLAUDE.local.md
+.claude/settings.local.json
