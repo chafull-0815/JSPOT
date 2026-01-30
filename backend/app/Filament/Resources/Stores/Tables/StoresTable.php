@@ -75,7 +75,17 @@ class StoresTable
                     ->sortable(),
                 TextColumn::make('likes_count')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->label('ユーザーいいね'),
+                TextColumn::make('admin_likes')
+                    ->numeric()
+                    ->sortable()
+                    ->label('管理者いいね'),
+                TextColumn::make('total_likes')
+                    ->numeric()
+                    ->sortable()
+                    ->label('合計いいね')
+                    ->getStateUsing(fn ($record) => ($record->likes_count ?? 0) + ($record->admin_likes ?? 0)),
                 TextColumn::make('created_by_admin_id')
                     ->numeric()
                     ->sortable(),

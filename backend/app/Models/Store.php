@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -39,6 +41,8 @@ class Store extends Model
         'has_dinner',
         'dinner_min_price',
         'dinner_max_price',
+        'likes_count',
+        'admin_likes',
     ];
 
     protected $casts = [
@@ -101,6 +105,16 @@ class Store extends Model
         return $this->hasOne(StoreImage::class)
             ->where('is_main', true)
             ->orderBy('sort_order');
+    }
+
+    public function userLikes(): HasMany
+    {
+        return $this->hasMany(UserLike::class);
+    }
+
+    public function getTotalLikesAttribute(): int
+    {
+        return ($this->likes_count ?? 0) + ($this->admin_likes ?? 0);
     }
 
 }

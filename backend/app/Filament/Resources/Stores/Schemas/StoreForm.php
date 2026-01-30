@@ -64,9 +64,14 @@ class StoreForm
                     ->numeric()
                     ->prefix('$'),
                 TextInput::make('likes_count')
-                    ->required()
                     ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->disabled()
+                    ->label('ユーザーいいね数'),
+                TextInput::make('admin_likes')
+                    ->numeric()
+                    ->default(0)
+                    ->label('管理者いいね数（水増し用）'),
                 TextInput::make('created_by_admin_id')
                     ->numeric(),
                 TextInput::make('updated_by_admin_id')
