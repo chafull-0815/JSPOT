@@ -174,6 +174,22 @@ class StoreResource extends Resource
                   'default' => 3,
                   'sm' => 5,
                 ]),
+
+            Section::make('いいね数')
+                ->schema([
+                    TextInput::make('likes_count')
+                        ->label('ユーザーいいね数')
+                        ->numeric()
+                        ->disabled()
+                        ->dehydrated(false)
+                        ->columnSpan(1),
+                    TextInput::make('admin_likes')
+                        ->label('管理者いいね数（水増し用）')
+                        ->numeric()
+                        ->default(0)
+                        ->columnSpan(1),
+                ])
+                ->columns(2),
         ])
         ->columns(1);
     }
@@ -207,6 +223,16 @@ class StoreResource extends Resource
                 TextColumn::make('lunch_Max_price')->label('昼（Max）')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('dinner_Max_price')->label('夕（Max）')->searchable()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 
+                // いいね
+                TextColumn::make('likes_count')->label('ユーザーいいね')->numeric()->sortable()->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('admin_likes')->label('管理者いいね')->numeric()->sortable()->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('total_likes')
+                    ->label('合計いいね')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->getStateUsing(fn ($record) => ($record->likes_count ?? 0) + ($record->admin_likes ?? 0)),
+
                 // 日付
                 TextColumn::make('updated_at')->label('作成日')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true)->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('published_at')->label('公開日')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true)->toggleable(isToggledHiddenByDefault: true),
