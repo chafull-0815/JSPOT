@@ -14,6 +14,11 @@ class EditStore extends EditRecord
 {
     protected static string $resource = StoreResource::class;
 
+    // 画像データを一時保存するプロパティ
+    protected ?string $mainImagePath = null;
+    protected array $subImagePaths = [];
+    protected array $memberData = [];
+
     protected function getHeaderActions(): array
     {
         return [
@@ -40,15 +45,29 @@ class EditStore extends EditRecord
         return $data;
     }
 
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // FileUploadデータを保存前にキャプチャ
+        $this->mainImagePath = $this->extractFilePath($data['main_image_path'] ?? null);
+
+        for ($i = 1; $i <= 20; $i++) {
+            $this->subImagePaths[$i] = $this->extractFilePath($data["sub_image_{$i}"] ?? null);
+        }
+
+        $this->memberData = $data['store_members'] ?? [];
+
+        // モデルに存在しないカラムを除去
+        unset($data['main_image_path']);
+        for ($i = 1; $i <= 20; $i++) {
+            unset($data["sub_image_{$i}"]);
+        }
+        unset($data['store_members']);
+
+        return $data;
+    }
+
     protected function afterSave(): void
     {
-        // DEBUG: データ構造を確認
-        \Log::info('EditStore afterSave', [
-            'main_image_path' => $this->data['main_image_path'] ?? 'NOT SET',
-            'sub_image_1' => $this->data['sub_image_1'] ?? 'NOT SET',
-            'data_keys' => array_keys($this->data),
-        ]);
-
         $this->syncImages();
         $this->syncMembers();
     }
@@ -59,15 +78,16 @@ class EditStore extends EditRecord
         $disk = Storage::disk('public');
 
         // メイン画像の処理
-        $mainImagePath = $this->extractFilePath($this->data['main_image_path'] ?? null);
         $existingMain = $store->images()->where('is_main', true)->first();
 
-        if ($mainImagePath) {
-            $finalPath = $this->moveToFinalDirectory($mainImagePath, $store->slug, 'main');
+        if ($this->mainImagePath) {
+            $finalPath = $this->moveToFinalDirectory($this->mainImagePath, $store->slug, 'main');
 
             if ($existingMain) {
                 if ($existingMain->image_path !== $finalPath) {
-                    $disk->delete($existingMain->image_path);
+                    if ($disk->exists($existingMain->image_path)) {
+                        $disk->delete($existingMain->image_path);
+                    }
                     $existingMain->update(['image_path' => $finalPath]);
                 }
             } else {
@@ -79,7 +99,9 @@ class EditStore extends EditRecord
                 ]);
             }
         } elseif ($existingMain) {
-            $disk->delete($existingMain->image_path);
+            if ($disk->exists($existingMain->image_path)) {
+                $disk->delete($existingMain->image_path);
+            }
             $existingMain->delete();
         }
 
@@ -87,7 +109,7 @@ class EditStore extends EditRecord
         $existingSubs = $store->images()->where('is_main', false)->orderBy('sort_order')->get()->keyBy('sort_order');
 
         for ($i = 1; $i <= 20; $i++) {
-            $path = $this->extractFilePath($this->data["sub_image_{$i}"] ?? null);
+            $path = $this->subImagePaths[$i] ?? null;
             $existing = $existingSubs->get($i);
 
             if ($path) {
@@ -95,7 +117,9 @@ class EditStore extends EditRecord
 
                 if ($existing) {
                     if ($existing->image_path !== $finalPath) {
-                        $disk->delete($existing->image_path);
+                        if ($disk->exists($existing->image_path)) {
+                            $disk->delete($existing->image_path);
+                        }
                         $existing->update(['image_path' => $finalPath]);
                     }
                 } else {
@@ -107,7 +131,9 @@ class EditStore extends EditRecord
                     ]);
                 }
             } elseif ($existing) {
-                $disk->delete($existing->image_path);
+                if ($disk->exists($existing->image_path)) {
+                    $disk->delete($existing->image_path);
+                }
                 $existing->delete();
             }
         }
@@ -151,11 +177,9 @@ class EditStore extends EditRecord
     protected function syncMembers(): void
     {
         $store = $this->record;
-        $members = $this->data['store_members'] ?? [];
-
         $keepIds = [];
 
-        foreach ($members as $member) {
+        foreach ($this->memberData as $member) {
             if (empty($member['user_id'])) {
                 continue;
             }

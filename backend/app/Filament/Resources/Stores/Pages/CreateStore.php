@@ -13,6 +13,32 @@ class CreateStore extends CreateRecord
 {
     protected static string $resource = StoreResource::class;
 
+    // 画像データを一時保存するプロパティ
+    protected ?string $mainImagePath = null;
+    protected array $subImagePaths = [];
+    protected array $memberData = [];
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        // FileUploadデータを保存前にキャプチャ
+        $this->mainImagePath = $this->extractFilePath($data['main_image_path'] ?? null);
+
+        for ($i = 1; $i <= 20; $i++) {
+            $this->subImagePaths[$i] = $this->extractFilePath($data["sub_image_{$i}"] ?? null);
+        }
+
+        $this->memberData = $data['store_members'] ?? [];
+
+        // モデルに存在しないカラムを除去
+        unset($data['main_image_path']);
+        for ($i = 1; $i <= 20; $i++) {
+            unset($data["sub_image_{$i}"]);
+        }
+        unset($data['store_members']);
+
+        return $data;
+    }
+
     protected function afterCreate(): void
     {
         $this->syncImages();
@@ -24,9 +50,8 @@ class CreateStore extends CreateRecord
         $store = $this->record;
 
         // メイン画像
-        $mainImagePath = $this->extractFilePath($this->data['main_image_path'] ?? null);
-        if ($mainImagePath) {
-            $newPath = $this->moveToFinalDirectory($mainImagePath, $store->slug, 'main');
+        if ($this->mainImagePath) {
+            $newPath = $this->moveToFinalDirectory($this->mainImagePath, $store->slug, 'main');
             StoreImage::create([
                 'store_id' => $store->id,
                 'image_path' => $newPath,
@@ -37,7 +62,7 @@ class CreateStore extends CreateRecord
 
         // サブ画像（20枠）
         for ($i = 1; $i <= 20; $i++) {
-            $path = $this->extractFilePath($this->data["sub_image_{$i}"] ?? null);
+            $path = $this->subImagePaths[$i] ?? null;
             if ($path) {
                 $newPath = $this->moveToFinalDirectory($path, $store->slug, "sub_{$i}");
                 StoreImage::create([
@@ -81,9 +106,8 @@ class CreateStore extends CreateRecord
     protected function syncMembers(): void
     {
         $store = $this->record;
-        $members = $this->data['store_members'] ?? [];
 
-        foreach ($members as $member) {
+        foreach ($this->memberData as $member) {
             if (empty($member['user_id'])) {
                 continue;
             }

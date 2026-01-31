@@ -252,7 +252,7 @@ class StoreResource extends Resource
                                 $component->state($members);
                             }
                         })
-                        ->dehydrated(false),
+                        ->dehydrated(),
                 ])
                 ->collapsible(),
         ])
