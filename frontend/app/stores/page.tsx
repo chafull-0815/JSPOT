@@ -2,7 +2,7 @@
 export const dynamic = "force-dynamic";
 
 import { Suspense } from "react";
-import { StoreSearchBar } from "@/components/stores";
+import { StoreSearchBar, ViewedStores } from "@/components/stores";
 import { StoreList } from "@/components/stores/archive/StoreList";
 import Link from "next/link";
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -222,6 +222,9 @@ export default async function StoresPage({
 
             {/* ページネーション */}
             <Pagination page={safePage} lastPage={lastPage} params={sp} />
+
+            {/* 閲覧履歴（ページ下部） */}
+            <ViewedStores className="mt-12" />
         </>
     );
 }

@@ -336,11 +336,8 @@ const L: Store[] = [
     lat: 34.6686,
     lng: 135.5019,
     images: {
-      cover_url: "/images/stores/テスト店-9/mainImage.jpg",
-      gallery_urls: [
-        "/images/stores/テスト店-9/store1.jpg",
-        "/images/stores/テスト店-9/store2.jpg",
-      ],
+      cover_url: "",
+      gallery_urls: [],
     },
     descriptions: { body1: "説明1" },
   },
@@ -391,11 +388,8 @@ const L: Store[] = [
     lat: 35.1442,
     lng: 136.8579,
     images: {
-      cover_url: "/images/stores/テスト店-11/mainImage.jpg",
-      gallery_urls: [
-        "/images/stores/テスト店-11/store1.jpg",
-        "/images/stores/テスト店-11/store2.jpg",
-      ],
+      cover_url: "",
+      gallery_urls: [],
     },
     descriptions: { body1: "説明1" },
   },
@@ -442,12 +436,8 @@ const L: Store[] = [
     lat: 33.5898,
     lng: 130.4219,
     images: {
-      cover_url: "/images/stores/テスト店-13/mainImage.jpg",
-      gallery_urls: [
-        "/images/stores/テスト店-13/store1.jpg",
-        "/images/stores/テスト店-13/store2.jpg",
-        "/images/stores/テスト店-13/store3.jpg",
-      ],
+      cover_url: "",
+      gallery_urls: [],
     },
     descriptions: { body1: "説明1", body2: "説明2" },
   },
@@ -470,11 +460,8 @@ const L: Store[] = [
     lat: 35.6476,
     lng: 139.7101,
     images: {
-      cover_url: "/images/stores/テスト店-14/mainImage.jpg",
-      gallery_urls: [
-        "/images/stores/テスト店-14/store1.jpg",
-        "/images/stores/テスト店-14/store2.jpg",
-      ],
+      cover_url: "",
+      gallery_urls: [],
     },
     descriptions: { body1: "説明1" },
   },
@@ -500,12 +487,8 @@ const L: Store[] = [
     lat: 34.6466,
     lng: 135.5183,
     images: {
-      cover_url: "/images/stores/テスト店-15/mainImage.jpg",
-      gallery_urls: [
-        "/images/stores/テスト店-15/store1.jpg",
-        "/images/stores/テスト店-15/store2.jpg",
-        "/images/stores/テスト店-15/store3.jpg",
-      ],
+      cover_url: "",
+      gallery_urls: [],
     },
     descriptions: { body1: "説明1" },
   },
@@ -531,11 +514,8 @@ const L: Store[] = [
     lat: 35.4576,
     lng: 139.6362,
     images: {
-      cover_url: "/images/stores/テスト店-16/mainImage.jpg",
-      gallery_urls: [
-        "/images/stores/テスト店-16/store1.jpg",
-        "/images/stores/テスト店-16/store2.jpg",
-      ],
+      cover_url: "",
+      gallery_urls: [],
     },
     descriptions: { body1: "説明1" },
   },
@@ -561,12 +541,8 @@ const L: Store[] = [
     lat: 35.1681,
     lng: 136.9054,
     images: {
-      cover_url: "/images/stores/テスト店-17/mainImage.jpg",
-      gallery_urls: [
-        "/images/stores/テスト店-17/store1.jpg",
-        "/images/stores/テスト店-17/store2.jpg",
-        "/images/stores/テスト店-17/store3.jpg",
-      ],
+      cover_url: "",
+      gallery_urls: [],
     },
     descriptions: { body1: "説明1", body2: "説明2" },
   },

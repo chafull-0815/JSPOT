@@ -35,8 +35,6 @@ export default async function Page() {
         <main className="pb-16">
             <MainHeroSlider slides={heroSlides} />
 
-            <ViewedStores />
-
             <Suspense fallback={null}>
                 <StoreSearchBar meta={meta} />
             </Suspense>
@@ -45,6 +43,9 @@ export default async function Page() {
 
             <SectionRow title="最近HOTなお店" items={hot} />
             <SectionRow title="新着のお店" items={news} />
+
+            {/* 閲覧履歴（ページ下部） */}
+            <ViewedStores className="mt-12" />
         </main>
     );
 }
