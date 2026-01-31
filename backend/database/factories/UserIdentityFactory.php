@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +10,13 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class UserIdentityFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'provider' => $this->faker->randomElement(['google', 'line', 'apple']),
+            'provider_user_id' => $this->faker->unique()->uuid(),
+            'provider_email' => $this->faker->safeEmail(),
         ];
     }
 }

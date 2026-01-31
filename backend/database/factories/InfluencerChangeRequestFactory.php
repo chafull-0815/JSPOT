@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\InfluencerProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +10,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class InfluencerChangeRequestFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'influencer_profile_id' => InfluencerProfile::factory(),
+            'payload' => ['display_name' => $this->faker->name()],
+            'message' => $this->faker->sentence(),
         ];
     }
 }

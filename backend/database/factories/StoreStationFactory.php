@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Station;
+use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +11,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class StoreStationFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'store_id' => Store::factory(),
+            'station_id' => Station::factory(),
+            'walking_minutes' => $this->faker->numberBetween(1, 15),
         ];
     }
 }

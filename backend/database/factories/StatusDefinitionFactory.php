@@ -9,15 +9,14 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class StatusDefinitionFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'domain' => $this->faker->word(),
+            'slug' => $this->faker->unique()->slug(1),
+            'label_ja' => $this->faker->word(),
+            'label_en' => $this->faker->word(),
+            'sort_order' => 0,
         ];
     }
 }

@@ -14,6 +14,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
@@ -46,10 +47,14 @@ class InfluencerProfileResource extends Resource
         return $schema->components([
             Section::make('基本情報')
                 ->schema([
-                    TextInput::make('user_id')
-                        ->disabled()
-                        ->dehydrated(false)
-                        ->columnSpan(1),
+                    Select::make('user_id')
+                        ->label('紐づけユーザー')
+                        ->relationship('user', 'email')
+                        ->searchable()
+                        ->preload()
+                        ->required()
+                        ->helperText('メールアドレスで検索')
+                        ->columnSpan(2),
 
                     TextInput::make('public_id')
                         ->disabled()
@@ -83,8 +88,12 @@ class InfluencerProfileResource extends Resource
                     FileUpload::make('profile_image')
                         ->label('自分の写真')
                         ->image()
-                        ->directory('influencers/images')
+                        ->disk('public')
+                        ->directory('influencers/temp')
                         ->visibility('public')
+                        ->maxSize(10240)
+                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
+                        ->imagePreviewHeight('200')
                         ->columnSpanFull(),
                 ])
                 ->columns([

@@ -12,7 +12,11 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use App\Models\User;
+use App\Models\StoreProfile;
+use App\Models\StoreMembership;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -99,45 +103,34 @@ class StoreResource extends Resource
 
                 Section::make('メイン画像')
                     ->schema([
-                        FileUpload::make('main_image_upload')
-                            ->label('メイン画像（1枚）')
+                        FileUpload::make('main_image_path')
+                            ->label('メイン画像（1枚・必須）')
                             ->image()
-                            ->directory('stores/images')
+                            ->disk('public')
+                            ->directory('stores/temp')
                             ->visibility('public')
-                            ->columnSpanFull()
-                            ->dehydrated(false)
-                            ->afterStateHydrated(function ($component, $record) {
-                                if ($record) {
-                                    $mainImage = $record->images()->where('is_main', true)->first();
-                                    if ($mainImage) {
-                                        $component->state($mainImage->image_path);
-                                    }
-                                }
-                            }),
+                            ->maxSize(10240)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
+                            ->imagePreviewHeight('200')
+                            ->required()
+                            ->columnSpanFull(),
                     ]),
 
-                Section::make('サブ画像')
-                    ->schema([
-                        Repeater::make('sub_images')
-                            ->label('サブ画像（最大20枚）')
-                            ->relationship('images', fn ($query) => $query->where('is_main', false))
-                            ->orderColumn('sort_order')
-                            ->defaultItems(20)
-                            ->minItems(20)
-                            ->maxItems(20)
-                            ->addable(false)
-                            ->deletable(false)
-                            ->reorderable(true)
-                            ->schema([
-                                FileUpload::make('image_path')
-                                    ->label('画像')
-                                    ->image()
-                                    ->directory('stores/images')
-                                    ->visibility('public'),
-                            ])
-                            ->grid(4)
-                            ->columns(1),
-                    ])
+                Section::make('サブ画像（最大20枚）')
+                    ->schema(
+                        collect(range(1, 20))->map(fn ($i) =>
+                            FileUpload::make("sub_image_{$i}")
+                                ->label("サブ画像 {$i}")
+                                ->image()
+                                ->disk('public')
+                                ->directory('stores/temp')
+                                ->visibility('public')
+                                ->maxSize(10240)
+                                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
+                                ->columnSpan(1)
+                        )->toArray()
+                    )
+                    ->columns(4)
                     ->collapsible(),
 
             Section::make('公開情報')
@@ -217,6 +210,49 @@ class StoreResource extends Resource
                         ->columnSpan(1),
                 ])
                 ->columns(2),
+
+            Section::make('スタッフ管理')
+                ->schema([
+                    Repeater::make('store_members')
+                        ->label('紐づけユーザー')
+                        ->schema([
+                            Select::make('user_id')
+                                ->label('ユーザー')
+                                ->options(fn () => User::pluck('email', 'id'))
+                                ->searchable()
+                                ->preload()
+                                ->required()
+                                ->columnSpan(2),
+                            Select::make('role')
+                                ->label('役割')
+                                ->options([
+                                    'owner' => 'オーナー',
+                                    'staff' => 'スタッフ',
+                                ])
+                                ->default('staff')
+                                ->required()
+                                ->columnSpan(1),
+                        ])
+                        ->columns(3)
+                        ->defaultItems(0)
+                        ->reorderable(false)
+                        ->afterStateHydrated(function ($component, $record) {
+                            if ($record) {
+                                $members = $record->memberships()
+                                    ->with('storeProfile')
+                                    ->get()
+                                    ->map(fn ($m) => [
+                                        'id' => $m->id,
+                                        'user_id' => $m->storeProfile?->user_id,
+                                        'role' => $m->role,
+                                    ])
+                                    ->toArray();
+                                $component->state($members);
+                            }
+                        })
+                        ->dehydrated(false),
+                ])
+                ->collapsible(),
         ])
         ->columns(1);
     }

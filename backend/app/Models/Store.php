@@ -87,6 +87,30 @@ class Store extends Model
                 $store->updated_by_admin_id = $admin->id;
             }
         });
+
+        // 物理削除時に画像も削除
+        static::forceDeleting(function (self $store) {
+            $store->deleteAllImages();
+        });
+    }
+
+    public function deleteAllImages(): void
+    {
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+
+        foreach ($this->images as $image) {
+            if ($image->image_path && $disk->exists($image->image_path)) {
+                $disk->delete($image->image_path);
+            }
+        }
+
+        // ディレクトリも削除
+        if ($this->slug) {
+            $dir = "stores/{$this->slug}";
+            if ($disk->exists($dir)) {
+                $disk->deleteDirectory($dir);
+            }
+        }
     }
 
     public function pageKey(): string
@@ -145,5 +169,10 @@ class Store extends Model
     public function updatedByAdmin(): BelongsTo
     {
         return $this->belongsTo(Admin::class, 'updated_by_admin_id');
+    }
+
+    public function memberships(): HasMany
+    {
+        return $this->hasMany(StoreMembership::class);
     }
 }

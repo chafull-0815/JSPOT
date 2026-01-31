@@ -46,6 +46,28 @@ class InfluencerProfile extends Model
                 }
             }
         });
+
+        // 物理削除時に画像も削除
+        static::forceDeleting(function (self $influencer) {
+            $influencer->deleteProfileImage();
+        });
+    }
+
+    public function deleteProfileImage(): void
+    {
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+
+        if ($this->profile_image && $disk->exists($this->profile_image)) {
+            $disk->delete($this->profile_image);
+        }
+
+        // ディレクトリも削除
+        if ($this->slug) {
+            $dir = "influencers/{$this->slug}";
+            if ($disk->exists($dir)) {
+                $disk->deleteDirectory($dir);
+            }
+        }
     }
 
     public function user(): BelongsTo

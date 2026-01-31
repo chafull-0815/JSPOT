@@ -9,15 +9,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class StoreGroupFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->company() . 'グループ',
+            'slug' => $this->faker->unique()->slug(2),
         ];
     }
 }

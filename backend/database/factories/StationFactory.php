@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Line;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +10,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class StationFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'line_id' => Line::factory(),
+            'name' => $this->faker->unique()->word() . '駅',
+            'slug' => $this->faker->unique()->slug(1),
         ];
     }
 }

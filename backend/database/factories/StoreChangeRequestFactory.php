@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Store;
+use App\Models\StoreProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +11,13 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class StoreChangeRequestFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'store_id' => Store::factory(),
+            'store_profile_id' => StoreProfile::factory(),
+            'payload' => ['name' => $this->faker->company()],
+            'message' => $this->faker->sentence(),
         ];
     }
 }
