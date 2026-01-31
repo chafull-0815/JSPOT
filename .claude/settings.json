@@ -1,0 +1,13 @@
+{
+    "permissions": {
+        "deny": [
+            "Bash(rm *)",
+            "Bash(rm -rf *)",
+            "Bash(git reset --hard*)",
+            "Read(../**)",
+            "Edit(../**)",
+            "Read(./.env*)",
+            "Read(./secrets/**)"
+        ]
+    }
+}

@@ -113,6 +113,7 @@ class StoreResource extends Resource
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
                             ->imagePreviewHeight('200')
                             ->required()
+                            ->dehydrated()
                             ->columnSpanFull(),
                     ]),
 
@@ -127,6 +128,7 @@ class StoreResource extends Resource
                                 ->visibility('public')
                                 ->maxSize(10240)
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
+                                ->dehydrated()
                                 ->columnSpan(1)
                         )->toArray()
                     )

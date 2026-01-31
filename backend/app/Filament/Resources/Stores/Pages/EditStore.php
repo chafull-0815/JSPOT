@@ -42,6 +42,13 @@ class EditStore extends EditRecord
 
     protected function afterSave(): void
     {
+        // DEBUG: データ構造を確認
+        \Log::info('EditStore afterSave', [
+            'main_image_path' => $this->data['main_image_path'] ?? 'NOT SET',
+            'sub_image_1' => $this->data['sub_image_1'] ?? 'NOT SET',
+            'data_keys' => array_keys($this->data),
+        ]);
+
         $this->syncImages();
         $this->syncMembers();
     }
