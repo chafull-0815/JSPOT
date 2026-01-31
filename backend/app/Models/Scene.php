@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Scene extends Model
 {
-    /** @use HasFactory<\Database\Factories\SceneFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'slug',
+    ];
 }

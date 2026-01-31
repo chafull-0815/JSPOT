@@ -1,40 +1,56 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class InfluencerProfile extends Model
 {
-    /** @use HasFactory<\Database\Factories\InfluencerProfileFactory> */
     use HasFactory;
     use SoftDeletes;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'display_name',
+        'name_en',
+        'youtube_url',
+        'tiktok_url',
+        'facebook_url',
+        'instagram_url',
+        'bio',
+        'profile_image',
+    ];
 
     protected static function booted(): void
     {
-      static::creating(function (self $influencer) {
-          if (empty($influencer->public_id)) {
-              $influencer->public_id = (string) Str::ulid();
-          }
+        static::creating(function (self $influencer) {
+            if (empty($influencer->public_id)) {
+                $influencer->public_id = (string) Str::ulid();
+            }
 
-          if (empty($influencer->slug)) {
-              $source = $influencer->en_name ?? $influencer->name_en ?? $influencer->name ?? '';
-              $influencer->slug = static::makeUniqueSlug($source);
-          }
-      });
+            if (empty($influencer->slug)) {
+                $source = $influencer->name_en ?? $influencer->display_name ?? '';
+                $influencer->slug = static::makeUniqueSlug($source);
+            }
+        });
 
-      static::updating(function (self $influencer) {
-          if ($influencer->isDirty(['en_name', 'name_en'])) {
-              $source = $influencer->en_name ?? $influencer->name_en ?? $influencer->name ?? '';
-              if (filled($source)) {
-                  $influencer->slug = static::makeUniqueSlug($source, $influencer->id);
-              }
-          }
-      });
+        static::updating(function (self $influencer) {
+            if ($influencer->isDirty('name_en')) {
+                $source = $influencer->name_en ?? $influencer->display_name ?? '';
+                if (filled($source)) {
+                    $influencer->slug = static::makeUniqueSlug($source, $influencer->id);
+                }
+            }
+        });
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     protected static function makeUniqueSlug(string $source, ?int $ignoreId = null): string

@@ -117,4 +117,33 @@ class Store extends Model
         return ($this->likes_count ?? 0) + ($this->admin_likes ?? 0);
     }
 
+    public function storeGroup(): BelongsTo
+    {
+        return $this->belongsTo(StoreGroup::class);
+    }
+
+    public function visibilityStatus(): BelongsTo
+    {
+        return $this->belongsTo(StatusDefinition::class, 'visibility_status_id');
+    }
+
+    public function prefecture(): BelongsTo
+    {
+        return $this->belongsTo(Prefecture::class);
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function createdByAdmin(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'created_by_admin_id');
+    }
+
+    public function updatedByAdmin(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'updated_by_admin_id');
+    }
 }

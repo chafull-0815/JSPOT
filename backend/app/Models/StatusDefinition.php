@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class StatusDefinition extends Model
 {
-    /** @use HasFactory<\Database\Factories\StatusDefinitionFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'domain',
+        'slug',
+        'label_ja',
+        'label_en',
+        'sort_order',
+    ];
 }
