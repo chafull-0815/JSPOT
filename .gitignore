@@ -39,3 +39,6 @@ Thumbs.db
 .claude/logs/
 CLAUDE.local.md
 .claude/settings.local.json
+
+# Backup files
+*.zip

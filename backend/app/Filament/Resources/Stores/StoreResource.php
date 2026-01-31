@@ -97,43 +97,56 @@ class StoreResource extends Resource
                   'sm' => 4,
                 ]),
 
-                Section::make('画像')
+                Section::make('メイン画像')
                     ->schema([
-                        Repeater::make('images')
-                            ->label('店舗画像（メイン1枚 + サブ最大20枚）')
-                            ->relationship()                // Store::images()
-                            ->orderColumn('sort_order')     // 並び替え有効化（sort_order を使う）:contentReference[oaicite:3]{index=3}
-                            ->minItems(1)
-                            ->maxItems(21)                  // 合計21枚まで（要件：メイン+サブ20）:contentReference[oaicite:4]{index=4}
+                        FileUpload::make('main_image_upload')
+                            ->label('メイン画像（1枚）')
+                            ->image()
+                            ->directory('stores/images')
+                            ->visibility('public')
+                            ->columnSpanFull()
+                            ->dehydrated(false)
+                            ->afterStateHydrated(function ($component, $record) {
+                                if ($record) {
+                                    $mainImage = $record->images()->where('is_main', true)->first();
+                                    if ($mainImage) {
+                                        $component->state($mainImage->image_path);
+                                    }
+                                }
+                            }),
+                    ]),
+
+                Section::make('サブ画像')
+                    ->schema([
+                        Repeater::make('sub_images')
+                            ->label('サブ画像（最大20枚）')
+                            ->relationship('images', fn ($query) => $query->where('is_main', false))
+                            ->orderColumn('sort_order')
+                            ->defaultItems(20)
+                            ->minItems(20)
+                            ->maxItems(20)
+                            ->addable(false)
+                            ->deletable(false)
+                            ->reorderable(true)
                             ->schema([
                                 FileUpload::make('image_path')
                                     ->label('画像')
                                     ->image()
                                     ->directory('stores/images')
-                                    ->visibility('public')  // 公開URL前提:contentReference[oaicite:5]{index=5}
-                                    ->required(),
-
-                                Checkbox::make('is_main')
-                                    ->label('メイン画像')
-                                    ->distinct()
-                                    ->fixIndistinctState()
-                                    ->default(false),        // boolean の distinct は「同時に true を1つだけ」にできる:contentReference[oaicite:6]{index=6}
-
-                                \Filament\Forms\Components\TextInput::make('alt_text')
-                                    ->label('代替テキスト')
-                                    ->maxLength(255),
+                                    ->visibility('public'),
                             ])
-                            ->columns(2)
-                            ->itemLabel(fn (array $state): ?string => ($state['is_main'] ?? false) ? 'メイン画像' : 'サブ画像'),
+                            ->grid(4)
+                            ->columns(1),
                     ])
                     ->collapsible(),
 
             Section::make('公開情報')
                 ->schema([
-                    TextInput::make('visibility_status_id')
-                    ->label('公開ステータス')->numeric()->columnSpan(1),
-
-                    DateTimePicker::make('published_at')->label('公開日')->columnSpan(1),
+                    \Filament\Forms\Components\Select::make('visibility_status_id')
+                        ->label('公開ステータス')
+                        ->options(fn () => \App\Models\StatusDefinition::where('domain', 'visibility')->pluck('label_ja', 'id'))
+                        ->default(fn () => \App\Models\StatusDefinition::where('domain', 'visibility')->where('slug', 'draft')->first()?->id)
+                        ->columnSpan(1),
                 ])
                 ->columns([
                   'default' => 3,
@@ -142,8 +155,22 @@ class StoreResource extends Resource
 
             Section::make('住所')
                 ->schema([
-                    TextInput::make('prefecture_id')->label('県名')->numeric()->columnSpan(1),
-                    TextInput::make('city_id')->label('市名')->numeric()->columnSpan(1),
+                    \Filament\Forms\Components\Select::make('prefecture_id')
+                        ->label('都道府県')
+                        ->placeholder('---')
+                        ->options(fn () => \App\Models\Prefecture::pluck('name', 'id'))
+                        ->reactive()
+                        ->afterStateUpdated(fn (callable $set) => $set('city_id', null))
+                        ->columnSpan(1),
+                    \Filament\Forms\Components\Select::make('city_id')
+                        ->label('市区町村')
+                        ->placeholder('---')
+                        ->options(fn (callable $get) =>
+                            $get('prefecture_id')
+                                ? \App\Models\City::where('prefecture_id', $get('prefecture_id'))->pluck('name', 'id')
+                                : []
+                        )
+                        ->columnSpan(1),
                     Textarea::make('address_details')->label('住所詳細')->rows(2)->columnSpan(4),
 
                     TextInput::make('latitude')->label('緯度')->numeric()->columnSpan(1),

@@ -13,12 +13,14 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -77,6 +79,13 @@ class InfluencerProfileResource extends Resource
                           'default' => 2,
                           'sm' => 2,
                         ]),
+
+                    FileUpload::make('profile_image')
+                        ->label('自分の写真')
+                        ->image()
+                        ->directory('influencers/images')
+                        ->visibility('public')
+                        ->columnSpanFull(),
                 ])
                 ->columns([
                   'default' => 3,
@@ -104,6 +113,10 @@ class InfluencerProfileResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->label('ID')->sortable(),
+                ImageColumn::make('profile_image')
+                    ->label('写真')
+                    ->disk('public')
+                    ->circular(),
                 TextColumn::make('user_id')->label('user_id')->sortable(),
                 TextColumn::make('display_name')->label('インフルエンサー名')->searchable()->sortable(),
                 TextColumn::make('youtube_url')->label('YouTubeのURL')->toggleable(isToggledHiddenByDefault: true),
