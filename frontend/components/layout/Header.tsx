@@ -1,11 +1,12 @@
 // components/layout/Header.tsx
 "use client";
 
-import { currentUser, UserRole } from "@/lib/fixtures/users.fixture"; // パスは実際の場所に合わせて
+import { currentUser, UserRole } from "@/lib/fixtures/users.fixture";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+// 基本ナビゲーション
 const NAV = [
   { href: "/", label: "Home" },
   { href: "/stores", label: "Stores" },
@@ -14,36 +15,88 @@ const NAV = [
   { href: "/contact", label: "Contact" },
 ];
 
-const getMypageHref = (role: UserRole): string | null => {
+// ロール別マイページ設定
+type MypageOption = {
+  role: UserRole;
+  href: string;
+  label: string;
+};
+
+const MYPAGE_OPTIONS: MypageOption[] = [
+  { role: "user", href: "/user/mypage", label: "ユーザーマイページ" },
+  { role: "shop_owner", href: "/shop/mypage", label: "店舗マイページ" },
+  { role: "influencer", href: "/influencer/mypage", label: "インフルエンサーマイページ" },
+];
+
+// 管理者用リンク
+const ADMIN_LINKS: MypageOption[] = [
+  { role: "admin", href: "/admin", label: "管理画面" },
+  { role: "super_admin", href: "/admin", label: "管理画面" },
+];
+
+// ユーザーが利用可能なマイページオプションを取得
+const getAvailableMypages = (role: UserRole): MypageOption[] => {
+  const options: MypageOption[] = [];
+
+  // ユーザーマイページは全員利用可能
+  options.push(MYPAGE_OPTIONS[0]);
+
+  // 店舗オーナーの場合
+  if (role === "shop_owner") {
+    options.push(MYPAGE_OPTIONS[1]);
+  }
+
+  // インフルエンサーの場合
+  if (role === "influencer") {
+    options.push(MYPAGE_OPTIONS[2]);
+  }
+
+  // 管理者の場合
+  if (role === "admin" || role === "super_admin") {
+    const adminLink = ADMIN_LINKS.find((l) => l.role === role);
+    if (adminLink) options.push(adminLink);
+  }
+
+  return options;
+};
+
+// デフォルトマイページを取得
+const getDefaultMypage = (role: UserRole): string => {
   switch (role) {
-    case "user":
-      return "/user/mypage";
     case "shop_owner":
       return "/shop/mypage";
     case "influencer":
       return "/influencer/mypage";
     case "admin":
-      return "/admin"; // 運営管理画面
     case "super_admin":
-      return "/super-admin"; // システム設定用ダッシュボード or /admin でもOK
+      return "/admin";
     default:
-      return null;
+      return "/user/mypage";
   }
 };
 
+// インフルエンサーかどうか
+const isInfluencer = (role: UserRole): boolean => role === "influencer";
+
 export default function Header() {
-  const [open, setOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mypageDropdownOpen, setMypageDropdownOpen] = useState(false);
   const pathname = usePathname();
 
-  // 今は fixture。あとでLaravel認証につなぐときに差し替え。
   const user = currentUser;
   const isLoggedIn = !!user;
-  const mypageHref = user ? getMypageHref(user.role) : null;
+  const availableMypages = user ? getAvailableMypages(user.role) : [];
+  const defaultMypage = user ? getDefaultMypage(user.role) : "/user/mypage";
+  const showSponsorLink = user && isInfluencer(user.role);
 
   const isAuthPage =
     pathname.startsWith("/user/login") ||
     pathname.startsWith("/shop/login") ||
     pathname.startsWith("/influencer/login");
+
+  const isOnMypage = pathname.startsWith("/user/mypage") ||
+    pathname.startsWith("/shop/mypage") ||
+    pathname.startsWith("/influencer/mypage");
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-white/90 backdrop-blur">
@@ -72,18 +125,73 @@ export default function Header() {
               );
             })}
 
-            {/* 右端：ログイン状態で出し分け */}
-            {isLoggedIn && mypageHref ? (
+            {/* インフルエンサー専用: 協賛店舗 */}
+            {showSponsorLink && (
               <Link
-                href={mypageHref}
-                className={`ml-2 rounded-xl px-3 py-2 text-sm font-semibold text-sky-600 hover:bg-sky-50 ${
-                  pathname.startsWith(mypageHref) ? "underline" : ""
+                href="/influencer/sponsors"
+                className={`rounded-xl px-3 py-2 text-sm transition hover:bg-amber-50 ${
+                  pathname === "/influencer/sponsors"
+                    ? "font-semibold text-amber-600"
+                    : "text-amber-500"
                 }`}
               >
-                マイページ
+                協賛店舗
               </Link>
+            )}
+
+            {/* マイページ（ドロップダウン） */}
+            {isLoggedIn ? (
+              <div
+                className="relative"
+                onMouseEnter={() => setMypageDropdownOpen(true)}
+                onMouseLeave={() => setMypageDropdownOpen(false)}
+              >
+                <Link
+                  href={defaultMypage}
+                  className={`ml-2 flex items-center gap-1 rounded-xl px-3 py-2 text-sm font-semibold text-sky-600 hover:bg-sky-50 ${
+                    isOnMypage ? "underline" : ""
+                  }`}
+                >
+                  マイページ
+                  {availableMypages.length > 1 && (
+                    <svg
+                      className={`h-4 w-4 transition-transform ${
+                        mypageDropdownOpen ? "rotate-180" : ""
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  )}
+                </Link>
+
+                {/* ドロップダウンメニュー */}
+                {mypageDropdownOpen && availableMypages.length > 1 && (
+                  <div className="absolute right-0 top-full mt-1 w-56 rounded-xl border bg-white py-2 shadow-lg">
+                    {availableMypages.map((option) => (
+                      <Link
+                        key={option.href}
+                        href={option.href}
+                        className={`block px-4 py-2 text-sm hover:bg-sky-50 ${
+                          pathname === option.href
+                            ? "bg-sky-50 font-semibold text-sky-600"
+                            : "text-slate-700"
+                        }`}
+                      >
+                        {option.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             ) : !isAuthPage ? (
-              // ログインしていなくて、かつログインページではないときだけ表示
               <>
                 <Link
                   href="/user/login"
@@ -103,8 +211,8 @@ export default function Header() {
 
           {/* SP: ハンバーガー */}
           <button
-            aria-label="Open menu"
-            onClick={() => setOpen(true)}
+            aria-label="メニューを開く"
+            onClick={() => setMobileMenuOpen(true)}
             className="inline-flex h-10 w-10 items-center justify-center rounded-xl border md:hidden"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
@@ -117,57 +225,94 @@ export default function Header() {
         </div>
       </div>
 
-      {/* SPメニュー（簡略版） */}
-      {open && (
+      {/* SPメニュー */}
+      {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div
             className="absolute inset-0 bg-black/40"
-            onClick={() => setOpen(false)}
+            onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="absolute right-0 top-0 h-full w-[86%] max-w-xs bg-white shadow-xl">
+          <div className="absolute right-0 top-0 h-full w-[86%] max-w-xs overflow-y-auto bg-white shadow-xl">
             <div className="flex items-center justify-between border-b px-4 py-3">
-              <span className="text-base font-semibold">Menu</span>
+              <span className="text-base font-semibold">メニュー</span>
               <button
-                aria-label="Close menu"
-                onClick={() => setOpen(false)}
+                aria-label="メニューを閉じる"
+                onClick={() => setMobileMenuOpen(false)}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-lg border"
               >
-                ✕
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
+
             <nav className="flex flex-col gap-1 p-3">
+              {/* 基本ナビ */}
               {NAV.map((n) => (
                 <Link
                   key={n.href}
                   href={n.href}
-                  onClick={() => setOpen(false)}
-                  className="rounded-xl px-3 py-3 text-sm hover:bg-black/5"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`rounded-xl px-3 py-3 text-sm hover:bg-black/5 ${
+                    pathname === n.href ? "font-semibold" : ""
+                  }`}
                 >
                   {n.label}
                 </Link>
               ))}
 
-              {isLoggedIn && mypageHref ? (
+              {/* インフルエンサー専用: 協賛店舗 */}
+              {showSponsorLink && (
                 <Link
-                  href={mypageHref}
-                  onClick={() => setOpen(false)}
-                  className="mt-2 rounded-xl px-3 py-3 text-sm font-semibold text-sky-600 hover:bg-sky-50"
+                  href="/influencer/sponsors"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`rounded-xl px-3 py-3 text-sm hover:bg-amber-50 ${
+                    pathname === "/influencer/sponsors"
+                      ? "font-semibold text-amber-600"
+                      : "text-amber-500"
+                  }`}
                 >
-                  マイページ
+                  協賛店舗
                 </Link>
+              )}
+
+              {/* 区切り線 */}
+              <div className="my-2 border-t" />
+
+              {/* ログイン状態で出し分け */}
+              {isLoggedIn ? (
+                <>
+                  <div className="px-3 py-2 text-xs font-semibold uppercase text-slate-400">
+                    マイページ
+                  </div>
+                  {availableMypages.map((option) => (
+                    <Link
+                      key={option.href}
+                      href={option.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`rounded-xl px-3 py-3 text-sm hover:bg-sky-50 ${
+                        pathname === option.href
+                          ? "bg-sky-50 font-semibold text-sky-600"
+                          : "text-sky-600"
+                      }`}
+                    >
+                      {option.label}
+                    </Link>
+                  ))}
+                </>
               ) : !isAuthPage ? (
                 <>
                   <Link
                     href="/user/login"
-                    onClick={() => setOpen(false)}
-                    className="mt-2 rounded-xl px-3 py-3 text-sm text-slate-600 hover:bg-black/5"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="rounded-xl px-3 py-3 text-sm text-slate-600 hover:bg-black/5"
                   >
                     ログイン
                   </Link>
                   <Link
                     href="/user/register"
-                    onClick={() => setOpen(false)}
-                    className="rounded-xl bg-sky-500 px-3 py-3 text-sm font-semibold text-white hover:bg-sky-400"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="rounded-xl bg-sky-500 px-3 py-3 text-center text-sm font-semibold text-white hover:bg-sky-400"
                   >
                     会員登録
                   </Link>

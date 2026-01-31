@@ -1,5 +1,6 @@
 // app/shop/mypage/page.tsx
 import { currentUser } from "@/lib/fixtures/users.fixture";
+import { ContactAdminForm } from "@/components/mypage/ContactAdminForm";
 
 export default function ShopMypagePage() {
   const user = currentUser;
@@ -112,6 +113,11 @@ export default function ShopMypagePage() {
               </button>
             </div>
           </div>
+        </section>
+
+        {/* 管理者へのお問い合わせ */}
+        <section>
+          <ContactAdminForm userType="shop" />
         </section>
       </div>
     </div>

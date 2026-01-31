@@ -1,5 +1,7 @@
 // app/influencer/mypage/page.tsx
 import { currentUser } from "@/lib/fixtures/users.fixture";
+import { ContactAdminForm } from "@/components/mypage/ContactAdminForm";
+import Link from "next/link";
 
 export default function InfluencerMypagePage() {
   const user = currentUser;
@@ -30,6 +32,34 @@ export default function InfluencerMypagePage() {
               {user?.email ?? "メールアドレス未設定（開発中ダミー）"}
             </p>
           </div>
+        </section>
+
+        {/* 協賛店舗へのリンク */}
+        <section>
+          <Link
+            href="/influencer/sponsors"
+            className="flex items-center justify-between rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm transition hover:bg-amber-100"
+          >
+            <div>
+              <p className="text-sm font-semibold text-amber-800">協賛店舗一覧</p>
+              <p className="mt-1 text-xs text-amber-600">
+                提携可能な協賛店舗をチェックして、新しいコラボレーションを始めましょう
+              </p>
+            </div>
+            <svg
+              className="h-5 w-5 text-amber-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </Link>
         </section>
 
         {/* 中段：提携 / 投稿 / 実績 */}
@@ -98,6 +128,11 @@ export default function InfluencerMypagePage() {
               <li>管理者への変更依頼フローとの連携</li>
             </ul>
           </div>
+        </section>
+
+        {/* 管理者へのお問い合わせ */}
+        <section>
+          <ContactAdminForm userType="influencer" />
         </section>
       </div>
     </div>
