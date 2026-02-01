@@ -135,7 +135,8 @@ export const getFirstUserByRole = (role: UserRole): User | undefined =>
   users.find((u) => u.role === role);
 
 // 開発中の現在ログインユーザー（見たいロールに変える）
-const DEFAULT_ROLE: UserRole | null = "shop_owner";
+// "user" | "shop_owner" | "influencer" | "admin" | "super_admin" | null
+const DEFAULT_ROLE: UserRole | null = "influencer";
 
 export const currentUser: User | null = DEFAULT_ROLE
   ? getFirstUserByRole(DEFAULT_ROLE) ?? null

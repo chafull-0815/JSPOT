@@ -1,4 +1,4 @@
-// app/(auth)/influencer/sponsors/page.tsx
+// app/go-to-stores/page.tsx
 import { currentUser } from "@/lib/fixtures/users.fixture";
 import Link from "next/link";
 
@@ -46,7 +46,7 @@ const SPONSOR_STORES = [
   },
 ];
 
-export default function SponsorStoresPage() {
+export default function GoToStoresPage() {
   const user = currentUser;
 
   // インフルエンサー以外はアクセス不可（実際はmiddlewareで制御）
@@ -54,12 +54,20 @@ export default function SponsorStoresPage() {
     return (
       <div className="min-h-[calc(100vh-64px-56px)] bg-slate-50">
         <div className="mx-auto max-w-5xl px-4 py-16 text-center">
-          <p className="text-lg font-semibold text-slate-900">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+            <svg className="h-8 w-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <p className="mt-4 text-lg font-semibold text-slate-900">
             このページはインフルエンサー専用です
+          </p>
+          <p className="mt-2 text-sm text-slate-500">
+            インフルエンサーとして登録されている方のみアクセスできます。
           </p>
           <Link
             href="/"
-            className="mt-4 inline-block rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-400"
+            className="mt-6 inline-block rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-400"
           >
             トップページへ戻る
           </Link>
@@ -75,10 +83,10 @@ export default function SponsorStoresPage() {
         <section>
           <div className="flex items-center gap-2">
             <Link
-              href="/influencer/mypage"
+              href="/mypage/influencer"
               className="text-sm text-slate-500 hover:text-slate-700"
             >
-              マイページ
+              ダッシュボード
             </Link>
             <span className="text-slate-400">/</span>
             <span className="text-sm font-medium text-slate-900">協賛店舗</span>

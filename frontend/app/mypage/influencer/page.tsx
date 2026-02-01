@@ -1,4 +1,4 @@
-// app/influencer/mypage/page.tsx
+// app/mypage/influencer/page.tsx
 import { currentUser } from "@/lib/fixtures/users.fixture";
 import { ContactAdminForm } from "@/components/mypage/ContactAdminForm";
 import Link from "next/link";
@@ -37,7 +37,7 @@ export default function InfluencerMypagePage() {
         {/* 協賛店舗へのリンク */}
         <section>
           <Link
-            href="/influencer/sponsors"
+            href="/go-to-stores"
             className="flex items-center justify-between rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm transition hover:bg-amber-100"
           >
             <div>
@@ -133,6 +133,19 @@ export default function InfluencerMypagePage() {
         {/* 管理者へのお問い合わせ */}
         <section>
           <ContactAdminForm userType="influencer" />
+        </section>
+
+        {/* ログアウト */}
+        <section>
+          <Link
+            href="/login"
+            className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            ログアウト
+          </Link>
         </section>
       </div>
     </div>

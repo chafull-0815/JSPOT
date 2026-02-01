@@ -18,7 +18,7 @@ type ViewedStoreItem = {
   viewedAt: number;
 };
 
-// ダミーデータ（開発用）
+// ダミーデータ（開発用）- 固定タイムスタンプでHydrationエラーを回避
 const DUMMY_VIEWED_STORES: ViewedStoreItem[] = [
   {
     slug: "test-1",
@@ -29,7 +29,7 @@ const DUMMY_VIEWED_STORES: ViewedStoreItem[] = [
     lunch: 1200,
     dinner: 4000,
     likes: 210,
-    viewedAt: Date.now() - 1000 * 60 * 5,
+    viewedAt: 1706745600000, // 固定値
   },
   {
     slug: "test-2",
@@ -40,7 +40,7 @@ const DUMMY_VIEWED_STORES: ViewedStoreItem[] = [
     lunch: 1500,
     dinner: 5000,
     likes: 120,
-    viewedAt: Date.now() - 1000 * 60 * 30,
+    viewedAt: 1706744100000, // 固定値
   },
   {
     slug: "test-8",
@@ -51,7 +51,7 @@ const DUMMY_VIEWED_STORES: ViewedStoreItem[] = [
     lunch: 2200,
     dinner: 6500,
     likes: 155,
-    viewedAt: Date.now() - 1000 * 60 * 60,
+    viewedAt: 1706742000000, // 固定値
   },
   {
     slug: "test-14",
@@ -62,7 +62,7 @@ const DUMMY_VIEWED_STORES: ViewedStoreItem[] = [
     lunch: 1800,
     dinner: 4800,
     likes: 77,
-    viewedAt: Date.now() - 1000 * 60 * 120,
+    viewedAt: 1706738400000, // 固定値
   },
 ];
 

@@ -1,6 +1,7 @@
-// app/shop/mypage/page.tsx
+// app/mypage/shop/page.tsx
 import { currentUser } from "@/lib/fixtures/users.fixture";
 import { ContactAdminForm } from "@/components/mypage/ContactAdminForm";
+import Link from "next/link";
 
 export default function ShopMypagePage() {
   const user = currentUser;
@@ -12,10 +13,10 @@ export default function ShopMypagePage() {
         <section className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
-              <span>店舗管理者マイページ</span>
+              <span>店舗マイページ</span>
             </div>
             <h1 className="mt-3 text-2xl font-semibold text-slate-900">
-              店舗管理マイページ
+              店舗マイページ
             </h1>
             <p className="mt-1 text-sm text-slate-500">
               店舗情報の編集や掲載内容の管理、お知らせの投稿などをここから行います。
@@ -118,6 +119,19 @@ export default function ShopMypagePage() {
         {/* 管理者へのお問い合わせ */}
         <section>
           <ContactAdminForm userType="shop" />
+        </section>
+
+        {/* ログアウト */}
+        <section>
+          <Link
+            href="/login"
+            className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            ログアウト
+          </Link>
         </section>
       </div>
     </div>

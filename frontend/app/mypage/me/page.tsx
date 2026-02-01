@@ -1,5 +1,6 @@
-// app/user/mypage/page.tsx
+// app/mypage/me/page.tsx
 import { currentUser } from "@/lib/fixtures/users.fixture";
+import Link from "next/link";
 
 export default function UserMypagePage() {
   const user = currentUser;
@@ -11,7 +12,7 @@ export default function UserMypagePage() {
         <section className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-3 py-1 text-xs font-medium text-sky-700">
-              <span>ユーザーマイページ</span>
+              <span>マイページ</span>
             </div>
             <h1 className="mt-3 text-2xl font-semibold text-slate-900">
               マイページ
@@ -102,6 +103,19 @@ export default function UserMypagePage() {
               <li>口コミ履歴・編集機能</li>
             </ul>
           </div>
+        </section>
+
+        {/* ログアウト */}
+        <section>
+          <Link
+            href="/login"
+            className="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            ログアウト
+          </Link>
         </section>
       </div>
     </div>
